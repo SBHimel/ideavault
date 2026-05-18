@@ -68,18 +68,27 @@ const Features = () => {
         </div>
 
         {/* Stats Sub-section */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-zinc-100 dark:bg-gradient-to-r dark:from-violet-950/20 dark:via-zinc-900/60 dark:to-indigo-950/20 rounded-2xl border border-zinc-200 dark:border-zinc-800/80 p-8 text-center backdrop-blur-sm shadow-md dark:shadow-xl">
-          {stats.map((stat, i) => (
-            <div key={i} className="space-y-1">
-              <p className="text-4xl md:text-5xl font-black bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-fuchsia-400 bg-clip-text text-transparent">
-                {stat.number}
-              </p>
-              <p className="text-xs font-medium tracking-wider text-zinc-500 dark:text-zinc-500 uppercase">
-                {stat.label}
-              </p>
-            </div>
-          ))}
-        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-white dark:bg-zinc-900/30 rounded-2xl border border-zinc-200 dark:border-zinc-800/80 p-8 text-center backdrop-blur-sm shadow-md dark:shadow-xl transition-all duration-300">
+  {stats.map((stat, i) => (
+    <div 
+      key={i} 
+      // Responsive layout updates padding/borders conditionally
+      className={`space-y-1 md:py-2 ${
+        i !== stats.length - 1 ? 'border-b md:border-b-0 md:border-r border-zinc-200/60 dark:border-zinc-800/50 pb-6 md:pb-0' : ''
+      }`}
+    >
+      {/* 1. Font-heading wrapper assigned + Balanced smooth color gradient mapping */}
+      <p className="font-heading text-4xl md:text-5xl font-black bg-gradient-to-r from-violet-600 to-fuchsia-600 dark:from-violet-400 dark:to-fuchsia-400 bg-clip-text text-transparent tracking-tight">
+        {stat.number}
+      </p>
+      
+      {/* 2. Text contrast logic updated seamlessly for light/dark view states */}
+      <p className="text-xs font-semibold tracking-widest text-zinc-500 dark:text-zinc-400 uppercase">
+        {stat.label}
+      </p>
+    </div>
+  ))}
+</div>
 
       </div>
     </section>
