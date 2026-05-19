@@ -1,13 +1,17 @@
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: 'class', // <-- Eiti active thakte hobe amader useTheme logic tracking-er jonno
+  darkMode: 'class', 
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    
+    "./node_modules/@heroui/react/dist/**/*.{js,ts,jsx,tsx}", 
   ],
   theme: {
     extend: {},
   },
-  plugins: [],
+  
+  plugins: [heroui()], 
 };

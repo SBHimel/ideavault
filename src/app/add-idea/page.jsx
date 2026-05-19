@@ -1,12 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation'; // ✅ রিডাইরেক্ট করার জন্য useRouter
-import toast from 'react-hot-toast'; // ✅ টোস্ট নোটিফিকেশনের জন্য
+import { useRouter } from 'next/navigation'; 
+import toast from 'react-hot-toast'; 
 
 const IdeaForm = () => {
   const router = useRouter();
-  const [loading, setLoading] = useState(false); // ✅ সাবমিট লোডিং স্টেট
+  const [loading, setLoading] = useState(false); 
 
   const [formData, setFormData] = useState({
     title: '',
@@ -28,7 +28,7 @@ const IdeaForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); // লোডিং শুরু
+    setLoading(true); 
 
     try {
       const res = await fetch('http://localhost:5000/idea', {
@@ -42,26 +42,26 @@ const IdeaForm = () => {
       const data = await res.json();
 
       if (data.insertedId) {
-        // ✅ ১. সাকসেস টোস্ট ফায়ার হবে
+     
         toast.success('Your innovation has been published successfully! 🚀', {
           style: {
-            background: '#0f172a',
+            background: '#09090b',
             color: '#fff',
-            border: '1px solid #1e293b'
+            border: '1px solid #27272a'
           }
         });
 
-        // ফিনাইল রিফ্রেশ বা স্টেট ক্লিয়ার
+       
         setFormData({
           title: '', shortDesc: '', detailedDesc: '', category: '',
           tags: '', imageUrl: '', budget: '', targetAudience: '',
           problemStatement: '', proposedSolution: ''
         });
 
-        // ✅ ২. ১.২ সেকেন্ড পর রিডাইরেক্ট হবে (যাতে ইউজার টোস্টটা দেখতে পারে)
+      
         setTimeout(() => {
           router.push('/ideas');
-          router.refresh(); // নতুন ডাটা লেটেস্ট দেখানোর জন্য ক্যাশ রিফ্রেশ
+          router.refresh(); 
         }, 1200);
 
       } else {
@@ -71,20 +71,23 @@ const IdeaForm = () => {
       console.error(error);
       toast.error('Network failure. Server may be offline.');
     } finally {
-      setLoading(false); // লোডিং শেষ
+      setLoading(false); 
     }
   };
 
+ 
+  const baseInputStyles = "w-full px-4 py-3 text-sm bg-zinc-100/70 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 focus:border-violet-500 dark:focus:border-violet-400 focus:ring-1 focus:ring-violet-500/20 text-zinc-900 dark:text-zinc-100 rounded-xl focus:outline-none transition-all placeholder-zinc-400 dark:placeholder-zinc-600";
+
   return (
-    <section className="bg-slate-950 py-12 px-4 sm:px-6 lg:px-8 text-white min-h-screen flex items-center justify-center">
-      <div className="max-w-4xl w-full bg-slate-900/60 border border-slate-800 rounded-2xl p-6 md:p-10 shadow-2xl backdrop-blur-sm">
+    <section className="bg-zinc-50 dark:bg-zinc-950 py-12 px-4 sm:px-6 lg:px-8 text-zinc-900 dark:text-zinc-100 min-h-screen flex items-center justify-center transition-colors duration-300">
+      <div className="max-w-4xl w-full bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800/80 rounded-2xl p-6 md:p-10 shadow-xl dark:shadow-2xl backdrop-blur-sm transition-all">
         
         {/* Form Header */}
         <div className="mb-10 text-center md:text-left">
-          <h2 className="text-2xl md:text-4xl font-extrabold bg-gradient-to-r from-blue-400 via-indigo-400 to-emerald-400 bg-clip-text text-transparent mb-2">
+          <h2 className="text-2xl md:text-4xl font-extrabold bg-gradient-to-r from-violet-600 to-fuchsia-600 dark:from-violet-400 dark:to-fuchsia-400 bg-clip-text text-transparent mb-2 tracking-tight">
             Pitch Your Next Big Idea
           </h2>
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-zinc-500 dark:text-zinc-400">
             Fill out the fields below to showcase your innovation to the global community.
           </p>
         </div>
@@ -95,7 +98,7 @@ const IdeaForm = () => {
           {/* Grid Layout: Title & Category */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="flex flex-col space-y-2">
-              <label className="text-sm font-medium text-slate-300">Idea Title *</label>
+              <label className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Idea Title *</label>
               <input
                 type="text"
                 name="title"
@@ -103,33 +106,33 @@ const IdeaForm = () => {
                 value={formData.title}
                 onChange={handleChange}
                 placeholder="e.g., AI Smart Grid for Cities"
-                className="w-full px-4 py-3 text-sm bg-slate-950 border border-slate-800 text-white rounded-xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder-slate-600"
+                className={baseInputStyles}
               />
             </div>
 
             <div className="flex flex-col space-y-2">
-              <label className="text-sm font-medium text-slate-300">Category *</label>
+              <label className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Category *</label>
               <select
                 name="category"
                 required
                 value={formData.category}
                 onChange={handleChange}
-                className="w-full px-4 py-3 text-sm bg-slate-950 border border-slate-800 text-white rounded-xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+                className={`${baseInputStyles} cursor-pointer appearance-none`}
               >
-                <option value="" disabled>Select a Category</option>
-                <option value="tech">Tech</option>
-                <option value="health">Health</option>
-                <option value="ai">AI (Artificial Intelligence)</option>
-                <option value="education">Education</option>
-                <option value="sustainability">Sustainability</option>
-                <option value="fintech">Fintech</option>
+                <option value="" disabled className="text-zinc-400 dark:text-zinc-600">Select a Category</option>
+                <option value="tech" className="bg-white text-zinc-400  dark:bg-zinc-900">Tech</option>
+                <option value="health" className="bg-white text-zinc-400 dark:bg-zinc-900">Health</option>
+                <option value="ai" className="bg-white text-zinc-400  dark:bg-zinc-900">AI (Artificial Intelligence)</option>
+                <option value="education" className="bg-white text-zinc-400  dark:bg-zinc-900">Education</option>
+                <option value="sustainability" className="bg-white text-zinc-400  dark:bg-zinc-900">Sustainability</option>
+                <option value="fintech" className="bg-white text-zinc-400  dark:bg-zinc-900">Fintech</option>
               </select>
             </div>
           </div>
 
           {/* Short Description */}
           <div className="flex flex-col space-y-2">
-            <label className="text-sm font-medium text-slate-300">Short Description *</label>
+            <label className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Short Description *</label>
             <input
               type="text"
               name="shortDesc"
@@ -138,14 +141,14 @@ const IdeaForm = () => {
               value={formData.shortDesc}
               onChange={handleChange}
               placeholder="A punchy one-liner or short pitch (max 150 characters)"
-              className="w-full px-4 py-3 text-sm bg-slate-950 border border-slate-800 text-white rounded-xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder-slate-600"
+              className={baseInputStyles}
             />
           </div>
 
           {/* Problem Statement & Proposed Solution (Two Column) */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="flex flex-col space-y-2">
-              <label className="text-sm font-medium text-slate-300">Problem Statement *</label>
+              <label className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Problem Statement *</label>
               <textarea
                 name="problemStatement"
                 required
@@ -153,12 +156,12 @@ const IdeaForm = () => {
                 value={formData.problemStatement}
                 onChange={handleChange}
                 placeholder="What critical problem are you trying to solve?"
-                className="w-full px-4 py-3 text-sm bg-slate-950 border border-slate-800 text-white rounded-xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder-slate-600 resize-none"
+                className={`${baseInputStyles} resize-none`}
               />
             </div>
 
             <div className="flex flex-col space-y-2">
-              <label className="text-sm font-medium text-slate-300">Proposed Solution *</label>
+              <label className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Proposed Solution *</label>
               <textarea
                 name="proposedSolution"
                 required
@@ -166,14 +169,14 @@ const IdeaForm = () => {
                 value={formData.proposedSolution}
                 onChange={handleChange}
                 placeholder="How does your idea solve this specific problem?"
-                className="w-full px-4 py-3 text-sm bg-slate-950 border border-slate-800 text-white rounded-xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder-slate-600 resize-none"
+                className={`${baseInputStyles} resize-none`}
               />
             </div>
           </div>
 
           {/* Detailed Description */}
           <div className="flex flex-col space-y-2">
-            <label className="text-sm font-medium text-slate-300">Detailed Description *</label>
+            <label className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Detailed Description *</label>
             <textarea
               name="detailedDesc"
               required
@@ -181,14 +184,14 @@ const IdeaForm = () => {
               value={formData.detailedDesc}
               onChange={handleChange}
               placeholder="Explain the entire workflow, business architecture, or technical details..."
-              className="w-full px-4 py-3 text-sm bg-slate-950 border border-slate-800 text-white rounded-xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder-slate-600"
+              className={baseInputStyles}
             />
           </div>
 
           {/* Target Audience & Image URL (Two Column) */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="flex flex-col space-y-2">
-              <label className="text-sm font-medium text-slate-300">Target Audience *</label>
+              <label className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Target Audience *</label>
               <input
                 type="text"
                 name="targetAudience"
@@ -196,19 +199,19 @@ const IdeaForm = () => {
                 value={formData.targetAudience}
                 onChange={handleChange}
                 placeholder="e.g., College Students, Small Businesses"
-                className="w-full px-4 py-3 text-sm bg-slate-950 border border-slate-800 text-white rounded-xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder-slate-600"
+                className={baseInputStyles}
               />
             </div>
 
             <div className="flex flex-col space-y-2">
-              <label className="text-sm font-medium text-slate-300">Image URL</label>
+              <label className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Image URL</label>
               <input
                 type="url"
                 name="imageUrl"
                 value={formData.imageUrl}
                 onChange={handleChange}
                 placeholder="https://example.com/banner.jpg"
-                className="w-full px-4 py-3 text-sm bg-slate-950 border border-slate-800 text-white rounded-xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder-slate-600"
+                className={baseInputStyles}
               />
             </div>
           </div>
@@ -216,26 +219,26 @@ const IdeaForm = () => {
           {/* Tags & Estimated Budget (Two Column - Optional Fields) */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="flex flex-col space-y-2">
-              <label className="text-sm font-medium text-slate-500">Tags <span className="text-xs font-normal text-slate-600">(Optional)</span></label>
+              <label className="text-xs font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">Tags <span className="text-[10px] font-normal lowercase text-zinc-400 dark:text-zinc-600">(optional)</span></label>
               <input
                 type="text"
                 name="tags"
                 value={formData.tags}
                 onChange={handleChange}
                 placeholder="e.g., web3, greenenergy, automation"
-                className="w-full px-4 py-3 text-sm bg-slate-950 border border-slate-800 text-white rounded-xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder-slate-600"
+                className={baseInputStyles}
               />
             </div>
 
             <div className="flex flex-col space-y-2">
-              <label className="text-sm font-medium text-slate-500">Estimated Budget <span className="text-xs font-normal text-slate-600">(Optional)</span></label>
+              <label className="text-xs font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">Estimated Budget <span className="text-[10px] font-normal lowercase text-zinc-400 dark:text-zinc-600">(optional)</span></label>
               <input
                 type="text"
                 name="budget"
                 value={formData.budget}
                 onChange={handleChange}
                 placeholder="e.g., $5,000 - $10,000"
-                className="w-full px-4 py-3 text-sm bg-slate-950 border border-slate-800 text-white rounded-xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder-slate-600"
+                className={baseInputStyles}
               />
             </div>
           </div>
@@ -244,13 +247,13 @@ const IdeaForm = () => {
           <div className="pt-4 flex justify-end">
             <button
               type="submit"
-              disabled={loading} // ✅ লোডিং ট্রু থাকলে বাটন ডিজেবল থাকবে
-              className="w-full md:w-auto inline-flex items-center justify-center px-10 py-3.5 text-base font-semibold text-slate-950 bg-gradient-to-r from-blue-400 via-cyan-400 to-emerald-400 hover:from-blue-500 hover:to-emerald-500 rounded-xl shadow-lg shadow-blue-500/10 hover:shadow-emerald-500/20 transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={loading} 
+              className="w-full md:w-auto inline-flex items-center justify-center px-10 py-3.5 text-base font-bold text-white dark:text-zinc-950 bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 rounded-xl shadow-md hover:shadow-xl dark:shadow-violet-500/5 transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'Publishing Blueprint...' : 'Publish Idea'}
               {!loading && (
-                <svg className="w-5 h-5 ml-2 -mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                <svg className="w-5 h-5 ml-2 -mr-1" fill="none" >
+                  <path strokeLinecap="round" strokeLinejoin="round"  />
                 </svg>
               )}
             </button>
