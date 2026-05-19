@@ -1,6 +1,10 @@
+
 import React from 'react';
 import Link from 'next/link';
 import CommentSection from '@/components/CommentSection'; // <-- Client Component Import Kora
+import { Button } from '@heroui/react';
+import { SquarePen } from 'lucide-react';
+import { UpdateIdeaModal } from '@/components/UpdateIdeaModal';
 
 const IdeaDetailsPage = async ({ params }) => {
     const { id } = await params;
@@ -10,35 +14,45 @@ const IdeaDetailsPage = async ({ params }) => {
     const idea = await res.json();
 
     // Safely destructuring data fields with fallbacks
-    const { 
-        title, 
-        category, 
-        shortDesc, 
-        detailedDesc, 
-        problemStatement, 
-        proposedSolution, 
-        targetAudience, 
-        budget, 
-        imageUrl, 
-        tags, 
-        author 
+    const {
+        title,
+        category,
+        shortDesc,
+        detailedDesc,
+        problemStatement,
+        proposedSolution,
+        targetAudience,
+        budget,
+        imageUrl,
+        tags,
+        author
     } = idea;
 
     return (
         <section className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
             <div className="max-w-5xl mx-auto">
-                
-                {/* Back Button Layout */}
-                <div className="mb-8">
-                    <Link 
-                        href="/ideas" 
-                        className="inline-flex items-center text-sm font-semibold text-violet-600 dark:text-violet-400 hover:text-violet-500 dark:hover:text-violet-300 group"
-                    >
-                        <svg className="w-4 h-4 mr-2 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                        </svg>
-                        Back to Exploration
-                    </Link>
+
+
+
+                <div className='flex justify-between items-center'>
+                    {/* Back Button Layout */}
+                    <div className="mb-8">
+
+                        <Link
+                            href="/ideas"
+                            className="inline-flex items-center text-sm font-semibold text-violet-600 dark:text-violet-400 hover:text-violet-500 dark:hover:text-violet-300 group"
+                        >
+                            <svg className="w-4 h-4 mr-2 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                            </svg>
+                            Back to Exploration
+                        </Link>
+                    </div>
+
+                    <div>
+                        <UpdateIdeaModal idea={idea}></UpdateIdeaModal>
+                    </div>
+
                 </div>
 
                 {/* Hero / Header Panel */}
@@ -83,10 +97,10 @@ const IdeaDetailsPage = async ({ params }) => {
 
                 {/* Main Content Blueprint Layout */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                    
+
                     {/* Left Column: Deep Core Content */}
                     <div className="lg:col-span-2 space-y-8">
-                        
+
                         {/* Problem & Solution Split Cards */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="bg-rose-50/40 dark:bg-rose-950/10 border border-rose-100 dark:border-rose-950/30 rounded-2xl p-6">
@@ -118,10 +132,10 @@ const IdeaDetailsPage = async ({ params }) => {
                             </p>
                         </div>
 
-                        
+
                         <CommentSection ideaId={id} />
-                       
-                       
+
+
 
                     </div>
 
