@@ -103,11 +103,11 @@ const TrendingIdeas = () => {
                 </div>
 
                 {/* Open/Interact Arrow Button */}
-                <Link href={`/ideas/${card.id}`} className="p-1.5 bg-zinc-200 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:bg-violet-600 dark:hover:bg-violet-600 hover:text-white dark:hover:text-white rounded-lg transition-all duration-200">
+                <div className="p-1.5 bg-zinc-200 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:bg-violet-600 dark:hover:bg-violet-600 hover:text-white dark:hover:text-white rounded-lg transition-all duration-200">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                   </svg>
-                </Link>
+                </div>
               </div>
               
             </div>

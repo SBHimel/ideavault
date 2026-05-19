@@ -1,8 +1,13 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation'; // ✅ রিডাইরেক্ট করার জন্য useRouter
+import toast from 'react-hot-toast'; // ✅ টোস্ট নোটিফিকেশনের জন্য
 
 const IdeaForm = () => {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false); // ✅ সাবমিট লোডিং স্টেট
+
   const [formData, setFormData] = useState({
     title: '',
     shortDesc: '',
@@ -21,22 +26,53 @@ const IdeaForm = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submitted Idea Data: ", formData);
-    // Ekhane API call logic hobe
+    setLoading(true); // লোডিং শুরু
 
-    const res = await fetch('http://localhost:5000/idea',{
+    try {
+      const res = await fetch('http://localhost:5000/idea', {
         method: 'POST',
         headers: {
-            'content-type': 'application/json'
+          'content-type': 'application/json'
         },
         body: JSON.stringify(formData)
-    })
+      });
 
-    const data = await res.json()
+      const data = await res.json();
 
-    console.log(data);
+      if (data.insertedId) {
+        // ✅ ১. সাকসেস টোস্ট ফায়ার হবে
+        toast.success('Your innovation has been published successfully! 🚀', {
+          style: {
+            background: '#0f172a',
+            color: '#fff',
+            border: '1px solid #1e293b'
+          }
+        });
+
+        // ফিনাইল রিফ্রেশ বা স্টেট ক্লিয়ার
+        setFormData({
+          title: '', shortDesc: '', detailedDesc: '', category: '',
+          tags: '', imageUrl: '', budget: '', targetAudience: '',
+          problemStatement: '', proposedSolution: ''
+        });
+
+        // ✅ ২. ১.২ সেকেন্ড পর রিডাইরেক্ট হবে (যাতে ইউজার টোস্টটা দেখতে পারে)
+        setTimeout(() => {
+          router.push('/ideas');
+          router.refresh(); // নতুন ডাটা লেটেস্ট দেখানোর জন্য ক্যাশ রিফ্রেশ
+        }, 1200);
+
+      } else {
+        toast.error('Failed to submit the blueprint. Please try again.');
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error('Network failure. Server may be offline.');
+    } finally {
+      setLoading(false); // লোডিং শেষ
+    }
   };
 
   return (
@@ -208,12 +244,15 @@ const IdeaForm = () => {
           <div className="pt-4 flex justify-end">
             <button
               type="submit"
-              className="w-full md:w-auto inline-flex items-center justify-center px-10 py-3.5 text-base font-semibold text-slate-950 bg-gradient-to-r from-blue-400 via-cyan-400 to-emerald-400 hover:from-blue-500 hover:to-emerald-500 rounded-xl shadow-lg shadow-blue-500/10 hover:shadow-emerald-500/20 transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0"
+              disabled={loading} // ✅ লোডিং ট্রু থাকলে বাটন ডিজেবল থাকবে
+              className="w-full md:w-auto inline-flex items-center justify-center px-10 py-3.5 text-base font-semibold text-slate-950 bg-gradient-to-r from-blue-400 via-cyan-400 to-emerald-400 hover:from-blue-500 hover:to-emerald-500 rounded-xl shadow-lg shadow-blue-500/10 hover:shadow-emerald-500/20 transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Publish Idea
-              <svg className="w-5 h-5 ml-2 -mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-              </svg>
+              {loading ? 'Publishing Blueprint...' : 'Publish Idea'}
+              {!loading && (
+                <svg className="w-5 h-5 ml-2 -mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                </svg>
+              )}
             </button>
           </div>
 

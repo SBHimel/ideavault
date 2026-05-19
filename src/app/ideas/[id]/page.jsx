@@ -5,6 +5,7 @@ import CommentSection from '@/components/CommentSection'; // <-- Client Componen
 import { Button } from '@heroui/react';
 import { SquarePen } from 'lucide-react';
 import { UpdateIdeaModal } from '@/components/UpdateIdeaModal';
+import { DeleteAlert } from '@/components/DeleteAlert';
 
 const IdeaDetailsPage = async ({ params }) => {
     const { id } = await params;
@@ -51,6 +52,8 @@ const IdeaDetailsPage = async ({ params }) => {
 
                     <div>
                         <UpdateIdeaModal idea={idea}></UpdateIdeaModal>
+
+                        <DeleteAlert idea={idea}></DeleteAlert>
                     </div>
 
                 </div>
