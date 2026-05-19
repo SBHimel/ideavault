@@ -31,18 +31,18 @@ const Register = () => {
                 name: user.name,
                 image: user.image || ""
             });
-            
+
             if (data) {
                 toast.success("Account initiated successfully! Welcome aboard 🚀", {
                     style: { background: '#09090b', color: '#fff', border: '1px solid #27272a' }
                 });
-                
+
                 setTimeout(() => {
                     router.push('/');
                     router.refresh();
                 }, 1200);
             }
-            
+
             if (error) {
                 toast.error(error.message || "Authentication layer error.");
             }
@@ -80,13 +80,13 @@ const Register = () => {
     return (
         // মেইন কন্টেইনার লাইট মোডে bg-zinc-50 এবং ডার্ক মোডে bg-zinc-950 হ্যান্ডেল করবে
         <div className="relative min-h-screen w-full bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex items-center justify-center px-4 py-12 z-10 transition-colors duration-300">
-            
+
             {/* ব্যাকগ্রাউন্ড নিওন গ্লো স্পট (ডার্ক মোডে ফুটবে, লাইট মোডেও সেটল থাকবে) */}
             <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[350px] h-[350px] bg-violet-600/10 blur-[120px] rounded-full pointer-events-none -z-10" />
-            
+
             {/* মেইন কার্ড কন্টেইনার (Light/Dark মোড ফ্রেন্ডলি) */}
             <div className="max-w-md w-full bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800/80 rounded-2xl p-6 md:p-8 shadow-xl dark:shadow-2xl backdrop-blur-md relative z-20 transition-all">
-                
+
                 {/* Header */}
                 <div className="mb-6 text-center">
                     <h1 className="text-2xl md:text-3xl font-extrabold bg-gradient-to-r from-violet-600 to-fuchsia-600 dark:from-violet-400 dark:to-fuchsia-400 bg-clip-text text-transparent mb-2 tracking-tight">
@@ -99,12 +99,12 @@ const Register = () => {
 
                 {/* Main Form */}
                 <Form onSubmit={onSubmit} className="flex flex-col gap-4 w-full">
-                    
+
                     {/* Name Field */}
                     <TextField isRequired name="name" type="text" className="w-full flex flex-col">
                         <Label className={inputClassNames.label}>Full Name *</Label>
-                        <Input 
-                            placeholder="e.g., John Doe" 
+                        <Input
+                            placeholder="e.g., John Doe"
                             variant="bordered"
                             classNames={{
                                 inputWrapper: inputClassNames.inputWrapper,
@@ -117,8 +117,8 @@ const Register = () => {
                     {/* Photo URL Field */}
                     <TextField name="image" type="url" className="w-full flex flex-col">
                         <Label className={inputClassNames.label}>Photo URL</Label>
-                        <Input 
-                            placeholder="https://example.com/avatar.jpg" 
+                        <Input
+                            placeholder="https://example.com/avatar.jpg"
                             variant="bordered"
                             classNames={{
                                 inputWrapper: inputClassNames.inputWrapper,
@@ -142,8 +142,8 @@ const Register = () => {
                         }}
                     >
                         <Label className={inputClassNames.label}>Email Address *</Label>
-                        <Input 
-                            placeholder="john@example.com" 
+                        <Input
+                            placeholder="john@example.com"
                             variant="bordered"
                             classNames={{
                                 inputWrapper: inputClassNames.inputWrapper,
@@ -173,26 +173,26 @@ const Register = () => {
                         }}
                     >
                         <Label className={inputClassNames.label}>Password *</Label>
-<div className="relative w-full">
-    <Input 
-        placeholder="••••••••" 
-        className="w-full mt-1 px-3 py-2.5 pr-10 text-sm bg-zinc-100/70 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 focus:border-violet-500 dark:focus:border-violet-400 rounded-xl text-zinc-900 dark:text-zinc-100 outline-none transition-all placeholder-zinc-400 dark:placeholder-zinc-600 shadow-none"
-        type={showPassword ? "text" : "password"}
-    />
-    {/* চোখ (Eye) বাটনটি সাধারণ HTML পজিশনে সেট করা হলো */}
-    <button
-        type="button"
-        onClick={togglePasswordVisibility}
-        className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors focus:outline-none flex items-center justify-center mt-0.5"
-    >
-        {showPassword ? (
-            <EyeSlash className="size-4" />
-        ) : (
-            <Eye className="size-4" />
-        )}
-    </button>
-</div>
-<Description className="text-[11px] text-zinc-400 dark:text-zinc-500 mt-1 block leading-normal"></Description>
+                        <div className="relative w-full">
+                            <Input
+                                placeholder="••••••••"
+                                className="w-full mt-1 px-3 py-2.5 pr-10 text-sm bg-zinc-100/70 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 focus:border-violet-500 dark:focus:border-violet-400 rounded-xl text-zinc-900 dark:text-zinc-100 outline-none transition-all placeholder-zinc-400 dark:placeholder-zinc-600 shadow-none"
+                                type={showPassword ? "text" : "password"}
+                            />
+                            {/* চোখ (Eye) বাটনটি সাধারণ HTML পজিশনে সেট করা হলো */}
+                            <button
+                                type="button"
+                                onClick={togglePasswordVisibility}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors focus:outline-none flex items-center justify-center mt-0.5"
+                            >
+                                {showPassword ? (
+                                    <EyeSlash className="size-4" />
+                                ) : (
+                                    <Eye className="size-4" />
+                                )}
+                            </button>
+                        </div>
+                        <Description className="text-[11px] text-zinc-400 dark:text-zinc-500 mt-1 block leading-normal"></Description>
                         <Description className="text-[11px] text-zinc-400 dark:text-zinc-500 mt-1 block leading-normal">
                             Min 6 characters with at least 1 uppercase & 1 lowercase letter.
                         </Description>
@@ -201,15 +201,15 @@ const Register = () => {
 
                     {/* Action Buttons */}
                     <div className="flex flex-col sm:flex-row gap-3 pt-3 w-full">
-                        <Button 
-                            type="submit" 
+                        <Button
+                            type="submit"
                             disabled={loading}
                             className="flex-1 h-11 inline-flex items-center justify-center text-sm font-bold text-white bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 rounded-xl shadow-lg shadow-violet-500/10 transition-all duration-300 active:scale-98 disabled:opacity-50"
                         >
                             {loading ? 'Syncing...' : <><Check className="size-4 mr-1.5" /> Create Account</>}
                         </Button>
-                        <Button 
-                            type="reset" 
+                        <Button
+                            type="reset"
                             className="h-11 px-5 text-sm font-bold rounded-xl bg-zinc-200 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 transition-colors"
                         >
                             Reset
