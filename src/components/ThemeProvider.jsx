@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
+import { Toaster } from 'react-hot-toast';
 
 export function ThemeProvider({ children, ...props }) {
   return (
@@ -11,6 +12,7 @@ export function ThemeProvider({ children, ...props }) {
       enableSystem={true} 
       {...props}
     >
+      <Toaster position="top-center" reverseOrder={false} />
       {children}
     </NextThemesProvider>
   );

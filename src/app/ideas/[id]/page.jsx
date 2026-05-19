@@ -10,28 +10,28 @@ const IdeaDetailsPage = async ({ params }) => {
     const idea = await res.json();
 
     // Safely destructuring data fields with fallbacks
-    const {
-        title,
-        category,
-        shortDesc,
-        detailedDesc,
-        problemStatement,
-        proposedSolution,
-        targetAudience,
-        budget,
-        imageUrl,
-        tags,
-        author
+    const { 
+        title, 
+        category, 
+        shortDesc, 
+        detailedDesc, 
+        problemStatement, 
+        proposedSolution, 
+        targetAudience, 
+        budget, 
+        imageUrl, 
+        tags, 
+        author 
     } = idea;
 
     return (
         <section className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
             <div className="max-w-5xl mx-auto">
-
+                
                 {/* Back Button Layout */}
                 <div className="mb-8">
-                    <Link
-                        href="/ideas"
+                    <Link 
+                        href="/ideas" 
                         className="inline-flex items-center text-sm font-semibold text-violet-600 dark:text-violet-400 hover:text-violet-500 dark:hover:text-violet-300 group"
                     >
                         <svg className="w-4 h-4 mr-2 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -83,10 +83,10 @@ const IdeaDetailsPage = async ({ params }) => {
 
                 {/* Main Content Blueprint Layout */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-
+                    
                     {/* Left Column: Deep Core Content */}
                     <div className="lg:col-span-2 space-y-8">
-
+                        
                         {/* Problem & Solution Split Cards */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="bg-rose-50/40 dark:bg-rose-950/10 border border-rose-100 dark:border-rose-950/30 rounded-2xl p-6">
@@ -118,53 +118,52 @@ const IdeaDetailsPage = async ({ params }) => {
                             </p>
                         </div>
 
-
-                        {/*  COMMENT SYSTEM  */}
-                        {/* 
+                        
                         <CommentSection ideaId={id} />
+                       
+                       
 
                     </div>
 
                     {/* Right Column: Sidebar / Meta Parameters */}
-                        <div className="space-y-6">
-                            {imageUrl && (
-                                <div className="rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800 shadow-sm bg-white dark:bg-zinc-900 p-2">
-                                    <img src={imageUrl} alt={title} className="w-full h-auto object-cover rounded-xl" />
+                    <div className="space-y-6">
+                        {imageUrl && (
+                            <div className="rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800 shadow-sm bg-white dark:bg-zinc-900 p-2">
+                                <img src={imageUrl} alt={title} className="w-full h-auto object-cover rounded-xl" />
+                            </div>
+                        )}
+
+                        <div className="bg-white dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800/80 rounded-2xl p-6 space-y-4">
+                            <div>
+                                <h4 className="text-[10px] font-bold uppercase text-zinc-400 dark:text-zinc-500 tracking-wider mb-1">Target Audience</h4>
+                                <p className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">
+                                    {targetAudience || "Global Consumer Market"}
+                                </p>
+                            </div>
+
+                            {tags && (
+                                <div className="pt-4 border-t border-zinc-200 dark:border-zinc-800/60">
+                                    <h4 className="text-[10px] font-bold uppercase text-zinc-400 dark:text-zinc-500 tracking-wider mb-2">Metadata Tags</h4>
+                                    <div className="flex flex-wrap gap-1.5">
+                                        {tags.split(',').map((tag, idx) => (
+                                            <span key={idx} className="text-xs text-zinc-600 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-800 px-2.5 py-1 rounded-md font-medium border border-zinc-200 dark:border-zinc-900">
+                                                #{tag.trim()}
+                                            </span>
+                                        ))}
+                                    </div>
                                 </div>
                             )}
-
-                            <div className="bg-white dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800/80 rounded-2xl p-6 space-y-4">
-                                <div>
-                                    <h4 className="text-[10px] font-bold uppercase text-zinc-400 dark:text-zinc-500 tracking-wider mb-1">Target Audience</h4>
-                                    <p className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">
-                                        {targetAudience || "Global Consumer Market"}
-                                    </p>
-                                </div>
-
-                                {tags && (
-                                    <div className="pt-4 border-t border-zinc-200 dark:border-zinc-800/60">
-                                        <h4 className="text-[10px] font-bold uppercase text-zinc-400 dark:text-zinc-500 tracking-wider mb-2">Metadata Tags</h4>
-                                        <div className="flex flex-wrap gap-1.5">
-                                            {tags.split(',').map((tag, idx) => (
-                                                <span key={idx} className="text-xs text-zinc-600 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-800 px-2.5 py-1 rounded-md font-medium border border-zinc-200 dark:border-zinc-900">
-                                                    #{tag.trim()}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-
-                            <div className="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800/60 rounded-2xl p-6 text-center space-y-4">
-                                <h4 className="text-sm font-bold text-zinc-800 dark:text-zinc-200">Interested in this project?</h4>
-                                <p className="text-xs text-zinc-400 dark:text-zinc-500 leading-relaxed">Connect with the founder to collaborate, invest, or offer core mentorship guidelines.</p>
-                                <button className="w-full py-3 px-4 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-violet-600 via-indigo-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700 transition-all shadow-md active:scale-[0.98]">
-                                    Request Collaboration
-                                </button>
-                            </div>
                         </div>
 
+                        <div className="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800/60 rounded-2xl p-6 text-center space-y-4">
+                            <h4 className="text-sm font-bold text-zinc-800 dark:text-zinc-200">Interested in this project?</h4>
+                            <p className="text-xs text-zinc-400 dark:text-zinc-500 leading-relaxed">Connect with the founder to collaborate, invest, or offer core mentorship guidelines.</p>
+                            <button className="w-full py-3 px-4 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-violet-600 via-indigo-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700 transition-all shadow-md active:scale-[0.98]">
+                                Request Collaboration
+                            </button>
+                        </div>
                     </div>
+
                 </div>
             </div>
         </section>

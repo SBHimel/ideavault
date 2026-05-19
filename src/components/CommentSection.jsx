@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 
 const CommentSection = ({ ideaId }) => {
     const [comments, setComments] = useState([]);
@@ -8,73 +9,122 @@ const CommentSection = ({ ideaId }) => {
     const [editingId, setEditingId] = useState(null);
     const [editText, setEditText] = useState('');
 
-    // Mock Active User Data (Tomar auth mechanism built hole oikhan theke ashbe)
+    // Active Dummy Authentication tracking model
     const currentUser = { name: "Current Innovator", email: "user@example.com" };
 
-    // 1. Fetch Comments
+    
+    // 1. FETCH COMMENTS FROM SEPARATE COLLECTION
+   
     useEffect(() => {
-        // Tumi backend endpoint ready korle ekhane fetch call bosiye nio
-        // fetch(`http://localhost:5000/comments/${ideaId}`).then(...)
-        
-        // Example initial structured state mapping dummy arrays
-        setComments([
-            {
-                _id: "c1",
-                userName: "Anika Rahman",
-                text: "This architecture scales beautifully. Have you considered decentralized file access speeds?",
-                timestamp: "2 hours ago",
-                userEmail: "anika@example.com"
-            },
-            {
-                _id: "c2",
-                userName: "Zayan Ahmed",
-                text: "Budget optimization is crisp, but node data redundancy limits might require cloud checks.",
-                timestamp: "Just now",
-                userEmail: "user@example.com" // Matches currentUser for demonstration
-            }
-        ]);
+        const fetchComments = async () => {
+            const res = await fetch(`http://localhost:5000/comments/${ideaId}`);
+            const data = await res.json();
+            setComments(data);
+        };
+        fetchComments();
     }, [ideaId]);
 
-    // 2. Add Comment Action
-    const handleAddComment = (e) => {
-        e.preventDefault();
-        if (!newComment.trim()) return;
+    // ==========================================
+    // ২. ADD NEW COMMENT DATA (POST REQUEST)
+    // ==========================================
+    const handleAddComment = async (e) => {
+    e.preventDefault();
+    if (!newComment.trim()) return;
 
-        const freshComment = {
-            _id: Math.random().toString(36).substr(2, 9), // Temporary unique unique key mapping
-            userName: currentUser.name,
-            text: newComment,
-            timestamp: "Just now",
-            userEmail: currentUser.email
-        };
-
-        setComments([freshComment, ...comments]);
-        setNewComment('');
+    const freshComment = {
+        ideaId: ideaId,
+        userName: currentUser.name,
+        userEmail: currentUser.email,
+        text: newComment,
+        timestamp: new Date().toLocaleString()
     };
 
-    // 3. Trigger Edit Mode Selection
+    try {
+        const res = await fetch(`http://localhost:5000/comments`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(freshComment)
+        });
+
+        const data = await res.json();
+        if (data.insertedId) {
+            const postedComment = { ...freshComment, _id: data.insertedId };
+            setComments([postedComment, ...comments]);
+            setNewComment('');
+            
+            // 🎉 সফল হওয়ার টোস্ট
+            toast.success('Your comment has been posted!');
+        }
+    } catch (error) {
+        // ❌ এরর হওয়ার টোস্ট
+        toast.error('Failed to post comment. Try again!');
+    }
+};
+
+    // ==========================================
+    // ৩. SAVE MOUNTED COMMENT CHANGES (PATCH REQUEST)
+    // ==========================================
+    const handleSaveEdit = async (commentId) => {
+    if (!editText.trim()) return;
+
+    const updatedPayload = {
+        text: editText,
+        timestamp: "Edited at " + new Date().toLocaleTimeString()
+    };
+
+    try {
+        const res = await fetch(`http://localhost:5000/comments/${commentId}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedPayload)
+        });
+
+        const data = await res.json();
+        if (data.modifiedCount > 0) {
+            setComments(comments.map(c => c._id === commentId ? { ...c, text: editText, timestamp: updatedPayload.timestamp } : c));
+            setEditingId(null);
+            
+            // 🎉 সফল হওয়ার টোস্ট
+            toast.success('Comment updated successfully!');
+        }
+    } catch (error) {
+        // ❌ এরর হওয়ার টোস্ট
+        toast.error('Could not update comment.');
+    }
+};
+
+    // ==========================================
+    // ৪. EXECUTE COMMENT DELETION (DELETE REQUEST)
+    // ==========================================
+    const handleDelete = async (commentId) => {
+    if (!confirm("Are you sure you want to delete this comment?")) return;
+
+    try {
+        const res = await fetch(`http://localhost:5000/comments/${commentId}`, {
+            method: 'DELETE'
+        });
+
+        const data = await res.json();
+        if (data.deletedCount > 0) {
+            setComments(comments.filter(c => c._id !== commentId));
+            
+            // 🎉 সফল হওয়ার টোস্ট
+            toast.success('Comment deleted!');
+        }
+    } catch (error) {
+        // ❌ এরর হওয়ার টোস্ট
+        toast.error('Failed to delete comment.');
+    }
+};
+
     const startEdit = (comment) => {
         setEditingId(comment._id);
         setEditText(comment.text);
     };
 
-    // 4. Save Edited Content
-    const handleSaveEdit = (id) => {
-        if (!editText.trim()) return;
-        setComments(comments.map(c => c._id === id ? { ...c, text: editText, timestamp: "Edited just now" } : c));
-        setEditingId(null);
-    };
-
-    // 5. Delete Action Process
-    const handleDelete = (id) => {
-        if (confirm("Are you sure you want to delete this comment?")) {
-            setComments(comments.filter(c => c._id !== id));
-        }
-    };
-
     return (
         <div className="mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-900">
-            <h3 className="font-heading text-xl font-bold mb-6 flex items-center text-zinc-900 dark:text-zinc-100">
+            <h3 className="font-heading text-xl font-bold mb-6 flex items-center text-zinc-900 dark:text-zinc-200">
                 💬 Discussion Forum ({comments.length})
             </h3>
 
@@ -97,17 +147,17 @@ const CommentSection = ({ ideaId }) => {
                 </div>
             </form>
 
-            {/* Comments Iteration Map Layout */}
+            {/* Comments List Grid Iteration */}
             <div className="space-y-4">
                 {comments.map((comment) => {
                     const isOwnComment = comment.userEmail === currentUser.email;
 
                     return (
-                        <div key={comment._id} className="bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800/60 rounded-2xl p-5 shadow-sm transition-all">
+                        <div key={comment._id} className="bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800/60 rounded-2xl p-5 shadow-sm">
                             <div className="flex items-start justify-between mb-3">
                                 <div className="flex items-center space-x-3">
                                     <div className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-xs font-bold uppercase text-zinc-600 dark:text-zinc-300">
-                                        {comment.userName[0]}
+                                        {comment.userName ? comment.userName[0] : "U"}
                                     </div>
                                     <div>
                                         <h4 className="text-sm font-bold text-zinc-800 dark:text-zinc-200">{comment.userName}</h4>
@@ -115,7 +165,6 @@ const CommentSection = ({ ideaId }) => {
                                     </div>
                                 </div>
 
-                                {/* Dynamic Modification Controls for Own Items */}
                                 {isOwnComment && editingId !== comment._id && (
                                     <div className="flex items-center space-x-2 text-xs font-semibold">
                                         <button onClick={() => startEdit(comment)} className="text-zinc-400 hover:text-violet-500 transition-colors">Edit</button>
@@ -125,7 +174,6 @@ const CommentSection = ({ ideaId }) => {
                                 )}
                             </div>
 
-                            {/* Conditional Display Field or Inline Edit Form */}
                             {editingId === comment._id ? (
                                 <div className="space-y-3 mt-2">
                                     <textarea
