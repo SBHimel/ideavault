@@ -88,7 +88,7 @@ const IdeaForm = () => {
         });
 
         setTimeout(() => {
-          router.push('/ideas');
+          router.push('/my-ideas');
           router.refresh(); 
         }, 1200);
 
