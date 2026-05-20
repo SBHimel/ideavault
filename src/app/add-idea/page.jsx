@@ -3,8 +3,27 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation'; 
 import toast from 'react-hot-toast'; 
+import { authClient } from '@/lib/auth-client';
 
 const IdeaForm = () => {
+  const { 
+          data: session, 
+          isPending, //loading state
+          error, //error object
+          refetch //refetch the session
+      } = authClient.useSession() 
+  
+      const user = session?.user
+      // console.log(user);
+
+      
+
+
+  
+      const handleSignOut = async () =>{
+        await authClient.signOut();
+      }
+
   const router = useRouter();
   const [loading, setLoading] = useState(false); 
 
@@ -30,19 +49,28 @@ const IdeaForm = () => {
     e.preventDefault();
     setLoading(true); 
 
+    // ১. এখানে আমরা formData-র সাথে ইউজারের ইনফরমেশন জোড়া লাগিয়ে দিচ্ছি
+    const ideaDataWithUser = {
+      ...formData,
+      userEmail: user?.email, 
+      userName: user?.name,   
+      userImage: user?.image, 
+      createdAt: new Date()   // আইডিয়াটি কখন তৈরি হলো তার টাইমস্ট্যাম্প
+    };
+
     try {
       const res = await fetch('http://localhost:5000/idea', {
         method: 'POST',
         headers: {
           'content-type': 'application/json'
         },
-        body: JSON.stringify(formData)
+        // ২. এখন formData-র বদলে ফুল অবজেক্টটা সার্ভারে পাঠাচ্ছি
+        body: JSON.stringify(ideaDataWithUser) 
       });
 
       const data = await res.json();
 
       if (data.insertedId) {
-     
         toast.success('Your innovation has been published successfully! 🚀', {
           style: {
             background: '#09090b',
@@ -51,14 +79,12 @@ const IdeaForm = () => {
           }
         });
 
-       
         setFormData({
           title: '', shortDesc: '', detailedDesc: '', category: '',
           tags: '', imageUrl: '', budget: '', targetAudience: '',
           problemStatement: '', proposedSolution: ''
         });
 
-      
         setTimeout(() => {
           router.push('/ideas');
           router.refresh(); 
@@ -71,9 +97,18 @@ const IdeaForm = () => {
       console.error(error);
       toast.error('Network failure. Server may be offline.');
     } finally {
-      setLoading(false); 
+      loading && setLoading(false); 
     }
   };
+
+  // const handleMyIdeas = async ()=>{
+  //       const myIdeaData = {
+  //         userId: user.id,
+  //         userImage: user.image,
+  //         userName: user.name,
+  //         formDataId: formData._id,
+  //       }
+  //     }
 
  
   const baseInputStyles = "w-full px-4 py-3 text-sm bg-zinc-100/70 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 focus:border-violet-500 dark:focus:border-violet-400 focus:ring-1 focus:ring-violet-500/20 text-zinc-900 dark:text-zinc-100 rounded-xl focus:outline-none transition-all placeholder-zinc-400 dark:placeholder-zinc-600";
