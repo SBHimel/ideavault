@@ -7,7 +7,7 @@ import Image from "next/image";
 
 export default async function Home() {
   // ডাটাবেজ থেকে সব আইডিয়া ফেচ করা হচ্ছে
-  const res = await fetch("http://localhost:5000/idea", { cache: "no-store" });
+  const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/idea`, { cache: "no-store" });
   const ideas = await res.json();
   return (
     <div>

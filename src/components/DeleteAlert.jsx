@@ -14,7 +14,7 @@ export function DeleteAlert({ idea }) {
     const handleDelete = async () => {
         setLoading(true);
         try {
-            const res = await fetch(`http://localhost:5000/idea/${_id}`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/idea/${_id}`, {
                 method: "DELETE",
                 headers: {
                     'content-type': 'application/json'

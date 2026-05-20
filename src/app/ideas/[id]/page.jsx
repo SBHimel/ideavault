@@ -19,7 +19,7 @@ const IdeaDetailsPage = async ({ params }) => {
     console.log(token);
 
     // Fetching particular idea data dynamically
-    const res = await fetch(`http://localhost:5000/idea/${id}`, { 
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/idea/${id}`, { 
         cache: 'no-store',
         headers: {
             'authorization': `Bearer ${token}` 
@@ -48,28 +48,29 @@ const IdeaDetailsPage = async ({ params }) => {
 
 
 
-                <div className='flex justify-between items-center'>
-                    {/* Back Button Layout */}
-                    <div className="mb-8">
+              
+<div className='flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6'>
+  
+  {/* Back Button Layout */}
+  <div className="flex items-center">
+    <Link
+      href="/ideas"
+      className="inline-flex items-center text-sm font-semibold text-violet-600 dark:text-violet-400 hover:text-violet-500 dark:hover:text-violet-300 group"
+    >
+      <svg className="w-4 h-4 mr-2 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+      Back to Exploration
+    </Link>
+  </div>
 
-                        <Link
-                            href="/ideas"
-                            className="inline-flex items-center text-sm font-semibold text-violet-600 dark:text-violet-400 hover:text-violet-500 dark:hover:text-violet-300 group"
-                        >
-                            <svg className="w-4 h-4 mr-2 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                            </svg>
-                            Back to Exploration
-                        </Link>
-                    </div>
 
-                    <div>
-                        <UpdateIdeaModal idea={idea}></UpdateIdeaModal>
+  <div className="flex items-center justify-start md:justify-end space-x-3">
+    <UpdateIdeaModal idea={idea} />
+    <DeleteAlert idea={idea} />
+  </div>
 
-                        <DeleteAlert idea={idea}></DeleteAlert>
-                    </div>
-
-                </div>
+</div>
 
                 {/* Hero / Header Panel */}
                 <div className="relative rounded-3xl overflow-hidden bg-white dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800/60 p-6 md:p-10 mb-10 shadow-sm">

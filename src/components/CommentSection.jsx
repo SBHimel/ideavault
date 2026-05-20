@@ -27,7 +27,7 @@ const CommentSection = ({ ideaId }) => {
 
                 const { data: tokenData } = await authClient.token();
 
-                const res = await fetch(`http://localhost:5000/comments/${ideaId}`, {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/comments/${ideaId}`, {
                     method: 'GET',
                     headers: {
                         'content-type': 'application/json',
@@ -72,7 +72,7 @@ const CommentSection = ({ ideaId }) => {
         try {
             const { data: tokenData } = await authClient.token()
             // console.log(tokenData);
-            const res = await fetch(`http://localhost:5000/comments`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/comments`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -111,7 +111,7 @@ const CommentSection = ({ ideaId }) => {
 
         try {
             const { data: tokenData } = await authClient.token()
-            const res = await fetch(`http://localhost:5000/comments/${commentId}`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/comments/${commentId}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -143,9 +143,9 @@ const CommentSection = ({ ideaId }) => {
 
         try {
             const { data: tokenData } = await authClient.token()
-            const res = await fetch(`http://localhost:5000/comments/${commentId}`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/comments/${commentId}`, {
                 method: 'DELETE',
-                 headers: {
+                headers: {
                     'authorization': `Bearer ${tokenData?.token}`
 
                 },
@@ -223,10 +223,11 @@ const CommentSection = ({ ideaId }) => {
 
                             {editingId === comment._id ? (
                                 <div className="space-y-3 mt-2">
+
                                     <textarea
                                         value={editText}
                                         onChange={(e) => setEditText(e.target.value)}
-                                        className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl p-3 text-sm text-zinc-800 dark:text-zinc-200 outline-none focus:border-violet-500"
+                                        className="w-full !bg-zinc-50 dark:!bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl p-3 text-sm text-zinc-800 dark:text-zinc-200 outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all text-left"
                                         rows="2"
                                     />
                                     <div className="flex justify-end space-x-2 text-xs font-bold">

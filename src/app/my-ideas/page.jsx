@@ -24,7 +24,7 @@ const MyIdeas = () => {
         try {
           const { data: tokenData } = await authClient.token();
 
-          fetch(`http://localhost:5000/idea?email=${user.email}`, {
+          fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/idea?email=${user.email}`, {
             method: 'GET',
             headers: {
               'content-type': 'application/json',
@@ -55,7 +55,7 @@ const MyIdeas = () => {
 
     try {
       const { data: tokenData } = await authClient.token();
-      const res = await fetch(`http://localhost:5000/idea/${id}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/idea/${id}`, {
         method: 'DELETE',
         headers: {
           'authorization': `Bearer ${tokenData?.token}`
@@ -85,7 +85,7 @@ const MyIdeas = () => {
     e.preventDefault();
     try {
       const { data: tokenData } = await authClient.token();
-      const res = await fetch(`http://localhost:5000/idea/${editingIdea._id}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/idea/${editingIdea._id}`, {
         method: 'PATCH',
         headers: {
           'content-type': 'application/json',

@@ -19,7 +19,7 @@ const MyInteractions = () => {
        
         const { data: tokenData } = await authClient.token();
 
-        const res = await fetch(`http://localhost:5000/user-comments`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/user-comments`, {
             method: 'GET',
             headers: {
                 'content-type': 'application/json',
@@ -70,7 +70,7 @@ const MyInteractions = () => {
         </div>
       ) : (
         <div className="space-y-4">
-          {comments.map((comment) => (
+          {comments?.map((comment) => (
             <div key={comment._id} className="p-5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-sm hover:border-zinc-300 dark:hover:border-zinc-700 transition-all">
               <p className="text-zinc-800 dark:text-zinc-200 font-medium mb-3">
                 "{comment.text}"
