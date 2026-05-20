@@ -2,120 +2,167 @@
 
 import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
+import { authClient } from '@/lib/auth-client';
 
 const CommentSection = ({ ideaId }) => {
+    const { data: session } = authClient.useSession();
+    const loggedInUser = session?.user;
+
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
     const [editingId, setEditingId] = useState(null);
     const [editText, setEditText] = useState('');
 
-    // Active Dummy Authentication tracking model
-    const currentUser = { name: "Current Innovator", email: "user@example.com" };
+    // অ্যাক্টিভ রিয়েল ইউজার মডেল (সেশন না থাকলে ডামি ব্যাকআপ থাকবে)
+    const currentUser = {
+        name: loggedInUser?.name || "Anonymous Innovator",
+        email: loggedInUser?.email || "user@example.com"
+    };
 
-    
-    // 1. FETCH COMMENTS FROM SEPARATE COLLECTION
-   
+    // ১. FETCH COMMENTS FROM SEPARATE COLLECTION
+
     useEffect(() => {
         const fetchComments = async () => {
-            const res = await fetch(`http://localhost:5000/comments/${ideaId}`);
-            const data = await res.json();
-            setComments(data);
+            try {
+
+                const { data: tokenData } = await authClient.token();
+
+                const res = await fetch(`http://localhost:5000/comments/${ideaId}`, {
+                    method: 'GET',
+                    headers: {
+                        'content-type': 'application/json',
+
+                        'authorization': `Bearer ${tokenData?.token}`
+                    }
+                });
+
+                const data = await res.json();
+                setComments(data);
+            } catch (error) {
+                console.error("Failed to fetch comments:", error);
+            }
         };
-        fetchComments();
+
+        if (ideaId) {
+            fetchComments();
+        }
     }, [ideaId]);
 
     // ==========================================
     // ২. ADD NEW COMMENT DATA (POST REQUEST)
     // ==========================================
     const handleAddComment = async (e) => {
-    e.preventDefault();
-    if (!newComment.trim()) return;
+        e.preventDefault();
+        if (!newComment.trim()) return;
 
-    const freshComment = {
-        ideaId: ideaId,
-        userName: currentUser.name,
-        userEmail: currentUser.email,
-        text: newComment,
-        timestamp: new Date().toLocaleString()
+        // সুরক্ষার জন্য লগইন ছাড়া কমেন্ট করতে না দেওয়া ভালো
+        if (!loggedInUser?.email) {
+            toast.error('Please login to post a comment!');
+            return;
+        }
+
+        const freshComment = {
+            ideaId: ideaId,
+            userName: currentUser.name,
+            userEmail: currentUser.email, // এখন এখানে আপনার আসল জিমেইল সেভ হবে
+            text: newComment,
+            timestamp: new Date().toLocaleString()
+        };
+
+        try {
+            const { data: tokenData } = await authClient.token()
+            // console.log(tokenData);
+            const res = await fetch(`http://localhost:5000/comments`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'authorization': `Bearer ${tokenData?.token}`
+
+                },
+
+                body: JSON.stringify(freshComment)
+            });
+
+            const data = await res.json();
+            if (data.insertedId || data.acknowledged) {
+                const insertedId = data.insertedId || Date.now().toString();
+                const postedComment = { ...freshComment, _id: insertedId };
+                setComments([postedComment, ...comments]);
+                setNewComment('');
+                toast.success('Your comment has been posted!');
+            }
+        } catch (error) {
+            console.error("Comment Post Error:", error);
+            toast.error('Failed to post comment. Try again!');
+        }
     };
 
-    try {
-        const res = await fetch(`http://localhost:5000/comments`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(freshComment)
-        });
-
-        const data = await res.json();
-        if (data.insertedId) {
-            const postedComment = { ...freshComment, _id: data.insertedId };
-            setComments([postedComment, ...comments]);
-            setNewComment('');
-            
-            // 🎉 সফল হওয়ার টোস্ট
-            toast.success('Your comment has been posted!');
-        }
-    } catch (error) {
-        // ❌ এরর হওয়ার টোস্ট
-        toast.error('Failed to post comment. Try again!');
-    }
-};
 
     // ==========================================
     // ৩. SAVE MOUNTED COMMENT CHANGES (PATCH REQUEST)
     // ==========================================
     const handleSaveEdit = async (commentId) => {
-    if (!editText.trim()) return;
+        if (!editText.trim()) return;
 
-    const updatedPayload = {
-        text: editText,
-        timestamp: "Edited at " + new Date().toLocaleTimeString()
-    };
+        const updatedPayload = {
+            text: editText,
+            timestamp: "Edited at " + new Date().toLocaleTimeString()
+        };
 
-    try {
-        const res = await fetch(`http://localhost:5000/comments/${commentId}`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(updatedPayload)
-        });
+        try {
+            const { data: tokenData } = await authClient.token()
+            const res = await fetch(`http://localhost:5000/comments/${commentId}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'authorization': `Bearer ${tokenData?.token}`
 
-        const data = await res.json();
-        if (data.modifiedCount > 0) {
-            setComments(comments.map(c => c._id === commentId ? { ...c, text: editText, timestamp: updatedPayload.timestamp } : c));
-            setEditingId(null);
-            
-            // 🎉 সফল হওয়ার টোস্ট
-            toast.success('Comment updated successfully!');
+                },
+                body: JSON.stringify(updatedPayload)
+            });
+
+            const data = await res.json();
+            if (data.modifiedCount > 0) {
+                setComments(comments.map(c => c._id === commentId ? { ...c, text: editText, timestamp: updatedPayload.timestamp } : c));
+                setEditingId(null);
+
+                // 🎉 সফল হওয়ার টোস্ট
+                toast.success('Comment updated successfully!');
+            }
+        } catch (error) {
+            // ❌ এরর হওয়ার টোস্ট
+            toast.error('Could not update comment.');
         }
-    } catch (error) {
-        // ❌ এরর হওয়ার টোস্ট
-        toast.error('Could not update comment.');
-    }
-};
+    };
 
     // ==========================================
     // ৪. EXECUTE COMMENT DELETION (DELETE REQUEST)
     // ==========================================
     const handleDelete = async (commentId) => {
-    if (!confirm("Are you sure you want to delete this comment?")) return;
+        if (!confirm("Are you sure you want to delete this comment?")) return;
 
-    try {
-        const res = await fetch(`http://localhost:5000/comments/${commentId}`, {
-            method: 'DELETE'
-        });
+        try {
+            const { data: tokenData } = await authClient.token()
+            const res = await fetch(`http://localhost:5000/comments/${commentId}`, {
+                method: 'DELETE',
+                 headers: {
+                    'authorization': `Bearer ${tokenData?.token}`
 
-        const data = await res.json();
-        if (data.deletedCount > 0) {
-            setComments(comments.filter(c => c._id !== commentId));
-            
-            // 🎉 সফল হওয়ার টোস্ট
-            toast.success('Comment deleted!');
+                },
+            });
+
+            const data = await res.json();
+            if (data.deletedCount > 0) {
+                setComments(comments.filter(c => c._id !== commentId));
+
+                // 🎉 সফল হওয়ার টোস্ট
+                toast.success('Comment deleted!');
+            }
+        } catch (error) {
+            // ❌ এরর হওয়ার টোস্ট
+            toast.error('Failed to delete comment.');
         }
-    } catch (error) {
-        // ❌ এরর হওয়ার টোস্ট
-        toast.error('Failed to delete comment.');
-    }
-};
+    };
 
     const startEdit = (comment) => {
         setEditingId(comment._id);

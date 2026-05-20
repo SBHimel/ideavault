@@ -164,7 +164,7 @@ const Login = () => {
                             disabled={loading}
                             className="w-full h-11 inline-flex items-center justify-center text-sm font-bold text-white bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 rounded-xl shadow-lg transition-all duration-300 active:scale-98 disabled:opacity-50"
                         >
-                            {loading ? 'Authorizing...' : <><Check className="size-4 mr-1.5" /> Sign In</>}
+                            {loading ? 'Authorizing...' : <><Check className="size-4 mr-1.5" /> Login</>}
                         </Button>
                     </div>
 

@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { Button, Input, Label, Modal, Surface, TextField, TextArea } from "@heroui/react"; 
+import { Button, Input, Label, Modal, Surface, TextField, TextArea } from "@heroui/react";
 import { SquarePen, Lightbulb, Settings, DollarSign, Users, Tag } from "lucide-react";
 import toast from "react-hot-toast";
+import { authClient } from "@/lib/auth-client";
 
 export function UpdateIdeaModal({ idea }) {
     const {
@@ -30,12 +31,17 @@ export function UpdateIdeaModal({ idea }) {
         const updatedIdea = Object.fromEntries(formData.entries());
 
         try {
+
+            const { data: tokenData } = await authClient.token()
+            console.log(tokenData);
+
             const res = await fetch(`http://localhost:5000/idea/${_id}`, {
                 method: 'PATCH',
                 headers: {
-                    'content-type': 'application/json'
+                    'content-type': 'application/json',
+                    'authorization': `Bearer ${tokenData?.token}`
                 },
-                body: JSON.stringify(updatedIdea) 
+                body: JSON.stringify(updatedIdea)
             });
 
             const data = await res.json();
@@ -44,7 +50,7 @@ export function UpdateIdeaModal({ idea }) {
 
             if (data.modifiedCount > 0 || data.matchedCount > 0) {
                 toast.success('Concept parameters updated successfully! 🚀');
-               
+
                 setTimeout(() => {
                     window.location.reload();
                 }, 1000);
@@ -61,19 +67,19 @@ export function UpdateIdeaModal({ idea }) {
     return (
         <Modal>
             {/* মেইন প্রিমিয়াম এডিট বাটন */}
-            <Button 
-                variant='outline' 
+            <Button
+                variant='outline'
                 className="rounded-xl border-zinc-200 dark:border-zinc-800 font-bold text-xs hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all shadow-sm active:scale-95 text-zinc-700 dark:text-zinc-300"
-            > 
+            >
                 <SquarePen className="size-4 text-violet-500 mr-1" /> Update Concept
             </Button>
-            
+
             <Modal.Backdrop className="bg-black/60 backdrop-blur-md">
                 <Modal.Container placement="center">
                     {/* মডালের উইন্ডো বড় করা হয়েছে সুন্দর লেআউটের জন্য */}
                     <Modal.Dialog className="sm:max-w-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800/80 rounded-3xl overflow-hidden shadow-2xl">
                         <Modal.CloseTrigger className="top-4 right-4" />
-                        
+
                         <Modal.Header className="border-b border-zinc-100 dark:border-zinc-800/60 pb-4 px-6 pt-6">
                             <Modal.Icon className="bg-violet-500/10 text-violet-600 dark:text-violet-400 border border-violet-500/20 p-2 rounded-xl">
                                 <Lightbulb className="size-5" />
@@ -83,12 +89,12 @@ export function UpdateIdeaModal({ idea }) {
                                 <p className="text-xs text-zinc-400 font-medium">Update technical scope, resource allocation, and strategy parameters</p>
                             </div>
                         </Modal.Header>
-                        
+
                         <Modal.Body className="p-6 max-h-[70vh] overflow-y-auto">
                             <Surface variant="default" className="bg-transparent p-0 border-none shadow-none">
                                 {/* ✅ ফর্মের সাথে id যুক্ত করা হলো */}
                                 <form id="update-form" onSubmit={onSubmit} className="flex flex-col gap-5">
-                                    
+
                                     {/* Row 1: Title & Category */}
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <TextField defaultValue={title} className="w-full" name="title" type="text" required>
@@ -152,14 +158,14 @@ export function UpdateIdeaModal({ idea }) {
                                 </form>
                             </Surface>
                         </Modal.Body>
-                        
+
                         <Modal.Footer className="border-t border-zinc-100 dark:border-zinc-800/60 p-4 bg-zinc-50/50 dark:bg-zinc-900/30 flex justify-end gap-2 text-xs font-bold">
                             <Button slot="close" variant="secondary" className="px-5 py-2.5 rounded-xl text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200">
                                 Abort
                             </Button>
                             {/* ✅ form attribute দিয়ে বাইরের বাটনের সাথে ফর্ম যুক্ত করা হলো */}
-                            <Button 
-                                type="submit" 
+                            <Button
+                                type="submit"
                                 form="update-form"
                                 disabled={loading}
                                 className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white shadow-md shadow-violet-500/10 transition-all disabled:opacity-50"

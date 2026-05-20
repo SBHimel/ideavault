@@ -6,7 +6,7 @@ const Ideas = async () => {
     const res = await fetch('http://localhost:5000/idea', { cache: 'no-store' }); 
     const ideas = await res.json();
 
-    console.log(ideas);
+    // console.log(ideas);
 
     return (
         // Base: Light mode (bg-zinc-50, text-zinc-900)

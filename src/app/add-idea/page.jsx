@@ -59,10 +59,12 @@ const IdeaForm = () => {
     };
 
     try {
+      const { data: tokenData } = await authClient.token()
       const res = await fetch('http://localhost:5000/idea', {
         method: 'POST',
         headers: {
-          'content-type': 'application/json'
+          'content-type': 'application/json',
+           'authorization': `Bearer ${tokenData?.token}`
         },
         // ২. এখন formData-র বদলে ফুল অবজেক্টটা সার্ভারে পাঠাচ্ছি
         body: JSON.stringify(ideaDataWithUser) 

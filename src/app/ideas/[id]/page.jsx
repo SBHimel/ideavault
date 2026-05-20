@@ -1,17 +1,30 @@
 
 import React from 'react';
 import Link from 'next/link';
-import CommentSection from '@/components/CommentSection'; // <-- Client Component Import Kora
+import CommentSection from '@/components/CommentSection'; 
 import { Button } from '@heroui/react';
 import { SquarePen } from 'lucide-react';
 import { UpdateIdeaModal } from '@/components/UpdateIdeaModal';
 import { DeleteAlert } from '@/components/DeleteAlert';
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
 
 const IdeaDetailsPage = async ({ params }) => {
     const { id } = await params;
 
+    const {token} = await auth.api.getToken({
+        headers: await headers()
+    })
+
+    console.log(token);
+
     // Fetching particular idea data dynamically
-    const res = await fetch(`http://localhost:5000/idea/${id}`, { cache: 'no-store' });
+    const res = await fetch(`http://localhost:5000/idea/${id}`, { 
+        cache: 'no-store',
+        headers: {
+            'authorization': `Bearer ${token}` 
+        }
+    });
     const idea = await res.json();
 
     // Safely destructuring data fields with fallbacks
