@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { authClient } from "@/lib/auth-client";
 import { Check, ArrowRight, Eye, EyeSlash } from "@gravity-ui/icons";
 import { Button, Description, FieldError, Form, Input, Label, Separator, TextField } from "@heroui/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 import Link from 'next/link';
 import { FcGoogle } from 'react-icons/fc';
@@ -14,6 +14,9 @@ const Register = () => {
     useEffect(() => { document.title = "Register | Idea Vault"; }, []);
 
     const router = useRouter();
+    const searchParams = useSearchParams();
+    // 🎯 ইউআরএল থেকে কাঙ্ক্ষিত পাথ ট্র্যাক করার জন্য
+    const from = searchParams.get("redirectTo") || "/";
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
 
@@ -42,7 +45,7 @@ const Register = () => {
                 });
 
                 setTimeout(() => {
-                    router.push('/');
+                    router.push(from);
                     router.refresh();
                 }, 1200);
             }
@@ -60,6 +63,7 @@ const Register = () => {
     const handleGoogleSignin = async()=>{
         await authClient.signIn.social({
             provider: "google",
+            callbackURL: from,
         });
     };
 

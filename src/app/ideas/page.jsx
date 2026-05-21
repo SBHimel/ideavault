@@ -43,7 +43,7 @@ const Ideas = async ({ searchParams }) => {
                 {/* সার্চ এবং ফিল্টার কম্পোনেন্ট */}
                 <SearchFilter />
 
-                {/* 🎯 এখানে জাদুকরী কন্ডিশন যোগ করা হলো */}
+              
                 {ideas.length === 0 ? (
                     // 📭 যদি কোনো আইডিয়া না থাকে (খালি থাকে) তবে এই সুন্দর মেসেজটি দেখাবে
                     <div className="flex flex-col items-center justify-center py-20 text-center border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-3xl p-6 bg-white dark:bg-zinc-900/50 shadow-sm">
