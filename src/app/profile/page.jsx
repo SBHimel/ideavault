@@ -3,8 +3,12 @@
 import { UpdateUserModal } from "@/components/UpdateUserModal";
 import { authClient } from "@/lib/auth-client";
 import { Avatar, Card } from "@heroui/react";
+import { useEffect } from "react";
 
 const ProfilePage = () => {
+
+    useEffect(() => { document.title = "Profile | Idea Vault"; }, []);
+
     const userData = authClient.useSession()
     const user = userData.data?.user
 

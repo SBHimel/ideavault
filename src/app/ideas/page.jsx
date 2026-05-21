@@ -1,6 +1,8 @@
 import IdeaCards from '@/components/IdeaCards';
 import React from 'react';
 
+export const metadata = { title: "All-ideas | Idea Vault" };
+
 const Ideas = async () => {
    
     const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/idea`, { cache: 'no-store' }); 

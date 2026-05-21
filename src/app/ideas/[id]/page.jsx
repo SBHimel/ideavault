@@ -9,6 +9,8 @@ import { DeleteAlert } from '@/components/DeleteAlert';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 
+export const metadata = { title: "details-idea | Idea Vault" };
+
 const IdeaDetailsPage = async ({ params }) => {
     const { id } = await params;
 

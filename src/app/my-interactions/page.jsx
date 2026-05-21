@@ -5,6 +5,9 @@ import { authClient } from '@/lib/auth-client';
 import Link from 'next/link';
 
 const MyInteractions = () => {
+
+  useEffect(() => { document.title = "My-comments | Idea Vault"; }, []);
+
   const { data: session } = authClient.useSession();
   const user = session?.user;
   
@@ -13,6 +16,9 @@ const MyInteractions = () => {
 
   
   const fetchUserComments = async () => { 
+
+    
+
     try {
         setLoading(true);
 

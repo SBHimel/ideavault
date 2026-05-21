@@ -1,6 +1,8 @@
 "use client";
 
-import React, { useState } from 'react';
+
+
+import React, { useEffect, useState } from 'react';
 import { authClient } from "@/lib/auth-client";
 import { Check, ArrowRight, Eye, EyeSlash } from "@gravity-ui/icons";
 import { Button, Description, FieldError, Form, Input, Label, TextField } from "@heroui/react";
@@ -10,6 +12,11 @@ import Link from 'next/link';
 import { FcGoogle } from 'react-icons/fc';
 
 const Login = () => {
+
+    useEffect(() => {
+        document.title = "Login | Idea Vault";
+    }, []);
+
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);

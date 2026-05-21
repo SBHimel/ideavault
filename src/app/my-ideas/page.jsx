@@ -17,6 +17,8 @@ const MyIdeas = () => {
   const [editingIdea, setEditingIdea] = useState(null);
   const [updateData, setUpdateData] = useState({ title: '', shortDesc: '' });
 
+  useEffect(() => { document.title = "My-ideas | Idea Vault"; }, []);
+
   useEffect(() => {
     
     if (user?.email) {
